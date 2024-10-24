@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, TrendingUp, TrendingDown, DollarSign, PieChart, AlertCircle, Plus, X } from 'lucide-react';
 
 interface Transaction {
   _id: string;
@@ -27,7 +27,8 @@ const Budget: React.FC = () => {
   const [showAddBudget, setShowAddBudget] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-    const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [selectedTimeframe, setSelectedTimeframe] = useState('month');
 
   // Fetch all data including budgets
   useEffect(() => {
@@ -176,116 +177,244 @@ const Budget: React.FC = () => {
     );
   }
 
+  const getStatusColor = (percentage: number): string => {
+    if (percentage >= 90) return 'text-red-500';
+    if (percentage >= 75) return 'text-yellow-500';
+    return 'text-green-500';
+  };
+
+  const getProgressBarColor = (percentage: number): string => {
+    if (percentage >= 90) return 'bg-red-500';
+    if (percentage >= 75) return 'bg-yellow-500';
+    return 'bg-green-500';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-red-500 flex items-center gap-2">
+          <AlertCircle />
+          <span>{error}</span>
+        </div>
+      </div>
+    );
+  }
+  
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+      {/* Header Section */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Budget Dashboard</h1>
-        
-        {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold text-gray-700">Total Income</h2>
-            <p className="text-2xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Budget Dashboard</h1>
+        <p className="text-gray-600">Track, manage, and optimize your spending</p>
+      </div>
+
+      {/* Time Frame Selector */}
+      <div className="mb-6">
+        <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1">
+          {['month', 'quarter', 'year'].map((timeframe) => (
+            <button
+              key={timeframe}
+              onClick={() => setSelectedTimeframe(timeframe)}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
+                ${selectedTimeframe === timeframe 
+                  ? 'bg-blue-500 text-white' 
+                  : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              {timeframe.charAt(0).toUpperCase() + timeframe.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Overview Cards with Enhanced Design */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <TrendingUp className="h-6 w-6 text-green-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-400">Total Income</span>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold text-gray-700">Total Expenses</h2>
-            <p className="text-2xl font-bold text-red-600">{formatCurrency(totalExpenses)}</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold text-gray-700">Remaining</h2>
-            <p className="text-2xl font-bold text-blue-600">{formatCurrency(totalIncome - totalExpenses)}</p>
+          <div className="flex flex-col">
+            <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(totalIncome)}</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              {incomes.length} income transactions
+            </p>
           </div>
         </div>
 
-        {/* Budget Management */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">Category Budgets</h2>
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2 bg-red-100 rounded-lg">
+              <TrendingDown className="h-6 w-6 text-red-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-400">Total Expenses</span>
+          </div>
+          <div className="flex flex-col">
+            <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(totalExpenses)}</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              {expenses.length} expense transactions
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all hover:shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <DollarSign className="h-6 w-6 text-blue-600" />
+            </div>
+            <span className="text-sm font-medium text-gray-400">Net Balance</span>
+          </div>
+          <div className="flex flex-col">
+            <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(totalIncome - totalExpenses)}</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Available to spend
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Budget Management Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-bold text-gray-800">Category Budgets</h2>
+              <p className="text-sm text-gray-500 mt-1">Manage your spending limits</p>
+            </div>
             <button
               onClick={() => setShowAddBudget(true)}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors gap-2"
             >
+              <Plus className="h-4 w-4" />
               Add Budget
             </button>
           </div>
+        </div>
 
-          {/* Add Budget Form */}
-          {showAddBudget && (
-            <form onSubmit={handleAddBudget} className="mb-6 p-4 bg-gray-50 rounded">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="Category"
-                  value={newBudget.category}
-                  onChange={(e) => setNewBudget({ ...newBudget, category: e.target.value })}
-                  className="p-2 border border-gray-300 rounded"
-                  required
-                />
-                <input
-                  type="number"
-                  placeholder="Budget Limit"
-                  value={newBudget.limit || ''}
-                  onChange={(e) => setNewBudget({ ...newBudget, limit: Number(e.target.value) })}
-                  className="p-2 border border-gray-300 rounded"
-                  required
-                />
+        {/* Add Budget Form with Enhanced Design */}
+        {showAddBudget && (
+          <div className="border-b border-gray-100">
+            <form onSubmit={handleAddBudget} className="p-6 bg-gray-50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Groceries"
+                    value={newBudget.category}
+                    onChange={(e) => setNewBudget({ ...newBudget, category: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Monthly Limit
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Enter amount"
+                    value={newBudget.limit || ''}
+                    onChange={(e) => setNewBudget({ ...newBudget, limit: Number(e.target.value) })}
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    required
+                  />
+                </div>
               </div>
-              <div className="flex justify-end gap-2 mt-4">
+              <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowAddBudget(false)}
-                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2"
                 >
+                  <X className="h-4 w-4" />
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors inline-flex items-center gap-2"
                 >
+                  <Plus className="h-4 w-4" />
                   Save Budget
                 </button>
               </div>
             </form>
-          )}
+          </div>
+        )}
 
-          {/* Budget List */}
-          <div className="space-y-4">
-            {budgets.map((budget) => (
-              <div key={budget._id || budget.category} className="border rounded p-4">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="flex items-center gap-4">
-                    <h3 className="font-semibold text-gray-800">{budget.category}</h3>
-                    <button
-                      onClick={() => budget._id && handleDeleteBudget(budget._id)}
-                      disabled={isDeleting === budget._id}
-                      className={`p-1.5 rounded-full hover:bg-red-100 text-red-500 transition-colors
-                        ${isDeleting === budget._id ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      title="Delete Budget"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+        {/* Budget List with Enhanced Design */}
+        <div className="divide-y divide-gray-100">
+          {budgets.map((budget) => (
+            <div key={budget._id || budget.category} className="p-6 hover:bg-gray-50 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${budget.percentage >= 90 ? 'bg-red-100' : 'bg-blue-100'}`}>
+                    <PieChart className={`h-5 w-5 ${budget.percentage >= 90 ? 'text-red-600' : 'text-blue-600'}`} />
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <div>
+                    <h3 className="font-semibold text-gray-800">{budget.category}</h3>
+                    <p className="text-sm text-gray-500">Monthly Budget</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => budget._id && handleDeleteBudget(budget._id)}
+                  disabled={isDeleting === budget._id}
+                  className={`p-2 rounded-lg hover:bg-red-100 text-red-500 transition-colors
+                    ${isDeleting === budget._id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  title="Delete Budget"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span className={getStatusColor(budget.percentage)}>
+                    {budget.percentage.toFixed(1)}% used
+                  </span>
+                  <span className="text-gray-600">
                     {formatCurrency(budget.spent)} of {formatCurrency(budget.limit)}
                   </span>
                 </div>
-                {/* Progress Bar */}
-                <div className="w-full h-2 bg-gray-200 rounded overflow-hidden">
+                
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div 
-                    className={`h-full ${budget.percentage > 90 ? 'bg-red-500' : 'bg-blue-500'}`}
+                    className={`h-full transition-all duration-500 ${getProgressBarColor(budget.percentage)}`}
                     style={{ width: `${Math.min(budget.percentage, 100)}%` }}
                   />
                 </div>
-                <div className="flex justify-between items-center mt-2 text-sm text-gray-600">
-                  <span>{budget.percentage.toFixed(1)}% spent</span>
-                  <span>{formatCurrency(budget.remaining)} remaining</span>
+                
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-500">
+                    {formatCurrency(budget.remaining)} remaining
+                  </span>
+                  <span className={`font-medium ${getStatusColor(budget.percentage)}`}>
+                    {budget.percentage >= 90 ? 'Over Budget' : 
+                     budget.percentage >= 75 ? 'Warning' : 'On Track'}
+                  </span>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
 
-
-              
+          {budgets.length === 0 && (
+            <div className="p-8 text-center text-gray-500">
+              <p className="mb-2">No budgets set up yet</p>
+              <p className="text-sm">Click the "Add Budget" button to create your first budget category</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
