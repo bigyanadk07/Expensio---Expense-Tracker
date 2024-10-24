@@ -127,7 +127,7 @@ const Expense: React.FC = () => {
   const formatAmount = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'NPR'
     }).format(amount);
   };
 

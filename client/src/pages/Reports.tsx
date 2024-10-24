@@ -103,7 +103,7 @@ const Reports: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Total Income</p>
-              <p className="text-2xl font-bold">${totalIncome.toLocaleString()}</p>
+              <p className="text-2xl font-bold">NPR {totalIncome.toLocaleString()}</p>
             </div>
             <DollarSign className="h-8 w-8 text-green-500" />
           </div>
@@ -113,7 +113,7 @@ const Reports: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-500">Total Expenses</p>
-              <p className="text-2xl font-bold">${totalExpenses.toLocaleString()}</p>
+              <p className="text-2xl font-bold">NPR {totalExpenses.toLocaleString()}</p>
             </div>
             <TrendingDown className="h-8 w-8 text-red-500" />
           </div>
