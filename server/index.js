@@ -5,6 +5,7 @@ const cors = require('cors');
 const expenseRoutes = require('./src/routes/expenseRoutes');
 const incomeRoutes = require('./src/routes/incomeRoutes');
 const savingsRoutes = require('./src/routes/savingsRoutes');
+const budgetRoute = require("./src/routes/budgetRoutes")
 
 const app = express();
 
@@ -33,6 +34,10 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+// In your server.js or app.js
+app.use('/budget', budgetRoute);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
