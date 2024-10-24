@@ -1,82 +1,62 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, Wallet, PiggyBank, PieChart, BarChart3 } from 'lucide-react';
 
 const Navbar: React.FC = () => {
-  return (
-    <div className='flex justify-center my-5'>
-
-<div className="px-7 bg-white shadow-lg rounded-2xl">
+  const location = useLocation();
   
-      <div className="flex">
-        <div className="flex-1 group">
-          <Link
-            to="/"
-            className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-indigo-500"
-          >
-            <span className="block px-1 pt-1 pb-1">
-              <i className="far fa-home text-2xl pt-1 mb-1 block"></i>
-              <span className="block text-xs pb-2">Home</span>
-              <span className="block w-5 mx-auto h-1 group-hover:bg-indigo-500 rounded-full"></span>
-            </span>
-          </Link>
-        </div>
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
-        <div className="flex-1 group">
-          <Link
-            to="/expense"
-            className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-indigo-500"
-          >
-            <span className="block px-1 pt-1 pb-1">
-              <i className="far fa-compass text-2xl pt-1 mb-1 block"></i>
-              <span className="block text-xs pb-2">Expense</span>
-              <span className="block w-5 mx-auto h-1 group-hover:bg-indigo-500 rounded-full"></span>
-            </span>
-          </Link>
-        </div>
+  const navItems = [
+    { path: '/', label: 'Home', icon: Home },
+    { path: '/expense', label: 'Expense', icon: Wallet },
+    { path: '/income', label: 'Income', icon: PiggyBank },
+    { path: '/budget', label: 'Budget', icon: PieChart },
+    { path: '/report', label: 'Reports', icon: BarChart3 },
+  ];
 
-        <div className="flex-1 group">
-          <Link
-            to="/income"
-            className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-indigo-500"
-          >
-            <span className="block px-1 pt-1 pb-1">
-              <i className="far fa-search text-2xl pt-1 mb-1 block"></i>
-              <span className="block text-xs pb-2">Income</span>
-              <span className="block w-5 mx-auto h-1 group-hover:bg-indigo-500 rounded-full"></span>
-            </span>
-          </Link>
-        </div>
-
-        <div className="flex-1 group">
-          <Link
-            to="/budget"
-            className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-indigo-500"
-          >
-            <span className="block px-1 pt-1 pb-1">
-              <i className="far fa-cog text-2xl pt-1 mb-1 block"></i>
-              <span className="block text-xs pb-2">Budget</span>
-              <span className="block w-5 mx-auto h-1 group-hover:bg-indigo-500 rounded-full"></span>
-            </span>
-          </Link>
-        </div>
-
-        <div className="flex-1 group">
-          <Link
-            to="/report"
-            className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-indigo-500"
-          >
-            <span className="block px-1 pt-1 pb-1">
-              <i className="far fa-file-alt text-2xl pt-1 mb-1 block"></i>
-              <span className="block text-xs pb-2">Reports</span>
-              <span className="block w-5 mx-auto h-1 group-hover:bg-indigo-500 rounded-full"></span>
-            </span>
-          </Link>
-        </div>
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-50 sm:relative sm:bottom-auto">
+      <div className="mx-auto max-w-screen-lg px-4 py-3">
+        <nav className="bg-white rounded-2xl shadow-lg backdrop-blur-lg bg-opacity-90 px-4 py-2 border border-gray-100">
+          <div className="flex items-center justify-between gap-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 px-3 
+                    transition-all duration-200 ease-in-out rounded-xl
+                    ${active 
+                      ? 'bg-indigo-50 text-indigo-600' 
+                      : 'text-gray-500 hover:bg-gray-50 hover:text-indigo-500'
+                    }`}
+                >
+                  <Icon 
+                    size={20} 
+                    className={`transition-all duration-200 ${
+                      active ? 'stroke-2' : 'stroke-1.5'
+                    }`} 
+                  />
+                  <span className={`text-xs font-medium ${
+                    active ? 'scale-100' : 'scale-95'
+                  }`}>
+                    {item.label}
+                  </span>
+                  {active && (
+                    <div className="absolute -bottom-[2px] left-1/2 h-1 w-12 -translate-x-1/2 rounded-full bg-indigo-600" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
       </div>
-    </div>
-
-
-
     </div>
   );
 };

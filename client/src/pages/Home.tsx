@@ -7,6 +7,7 @@ import { ChartSection } from '../components/ChartSection';
 import { TransactionList } from '../components/TransactionList';
 import { Modal } from '../components/Modal';
 import { TransactionForm } from '../components/TransactionForm';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -47,12 +48,12 @@ const Home: React.FC = () => {
     setTotalIncome(income.reduce((sum, inc) => sum + inc.amount, 0));
   }, [expenses, income]);
 
-  // Separate function to handle Expense submission
   const handleSubmitExpense = async (data: { amount: number; category: string }) => {
     try {
       const response = await axios.post('http://localhost:5000/expense', data);
       console.log('Expense added:', response.data);
       fetchData();
+      setIsExpenseModalOpen(false);
     } catch (error) {
       console.error('Error adding expense:', error.response?.data);
     }
@@ -63,21 +64,59 @@ const Home: React.FC = () => {
       const response = await axios.post('http://localhost:5000/income', data);
       console.log('Income added successfully:', response.data);
       fetchData();
+      setIsIncomeModalOpen(false);
     } catch (error) {
       console.error('Error adding income:', error.response?.data || error.message);
     }
   };
-  
-  
-
 
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' as const },
-      title: { display: true, text: 'Category Distribution' },
+      legend: {
+        position: 'top' as const,
+        labels: {
+          padding: 20,
+          font: {
+            size: 12,
+            family: "'Inter', sans-serif"
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: 'Category Distribution',
+        font: {
+          size: 16,
+          family: "'Inter', sans-serif",
+          weight: 'bold'
+        },
+        padding: 20
+      },
     },
-    scales: { y: { beginAtZero: true } },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+        },
+        ticks: {
+          font: {
+            family: "'Inter', sans-serif"
+          }
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: {
+            family: "'Inter', sans-serif"
+          }
+        }
+      }
+    },
   };
 
   const getChartData = (data: any[], label: string, colors: string[]) => {
@@ -92,32 +131,116 @@ const Home: React.FC = () => {
         label,
         data: Object.values(categories),
         backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
       }],
     };
   };
 
   if (loading) {
     return (
-      <div className="container mx-auto p-4 flex justify-center items-center min-h-screen">
-        <div className="text-xl">Loading...</div>
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-indigo-600 mx-auto mb-4" />
+          <p className="text-gray-600 font-medium">Loading your dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto p-4 flex justify-center items-center min-h-screen">
-        <div className="text-xl text-red-500">{error}</div>
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="text-center max-w-md mx-auto p-6 bg-white rounded-2xl shadow-lg">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Error Loading Dashboard</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={fetchData}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="min-h-screen bg-gray-50">
       <Header 
         onAddExpense={() => setIsExpenseModalOpen(true)} 
         onAddIncome={() => setIsIncomeModalOpen(true)} 
       />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <SummaryCard 
+            title="Total Income" 
+            amount={totalIncome} 
+            type="income"
+            className="transform transition-all duration-200 hover:scale-[1.02]" 
+          />
+          <SummaryCard 
+            title="Total Expense" 
+            amount={totalExpense} 
+            type="expense"
+            className="transform transition-all duration-200 hover:scale-[1.02]" 
+          />
+          <SummaryCard 
+            title="Balance" 
+            amount={totalIncome - totalExpense} 
+            type="balance"
+            className="transform transition-all duration-200 hover:scale-[1.02]" 
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <ChartSection
+              title="Expense Distribution"
+              data={getChartData(expenses, 'Expenses by Category', [
+                'rgba(239, 68, 68, 0.6)',
+                'rgba(59, 130, 246, 0.6)',
+                'rgba(245, 158, 11, 0.6)',
+                'rgba(16, 185, 129, 0.6)',
+                'rgba(139, 92, 246, 0.6)',
+              ])}
+              options={chartOptions}
+              categories={expenses.reduce((acc: any, expense) => {
+                acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+                return acc;
+              }, {})}
+            />
+          </div>
+          <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <ChartSection
+              title="Income Distribution"
+              data={getChartData(income, 'Income by Category', [
+                'rgba(16, 185, 129, 0.6)',
+                'rgba(139, 92, 246, 0.6)',
+                'rgba(245, 158, 11, 0.6)',
+                'rgba(59, 130, 246, 0.6)',
+                'rgba(167, 139, 250, 0.6)',
+              ])}
+              options={{...chartOptions, plugins: {...chartOptions.plugins, title: {...chartOptions.plugins.title, text: 'Income by Category'}}}}
+              categories={income.reduce((acc: any, inc) => {
+                acc[inc.category] = (acc[inc.category] || 0) + inc.amount;
+                return acc;
+              }, {})}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <TransactionList title="Recent Expenses" transactions={expenses} type="expense" />
+          </div>
+          <div className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <TransactionList title="Recent Income" transactions={income} type="income" />
+          </div>
+        </div>
+      </div>
 
       <Modal
         isOpen={isExpenseModalOpen}
@@ -126,7 +249,7 @@ const Home: React.FC = () => {
       >
         <TransactionForm
           type="expense"
-          onSubmit={handleSubmitExpense} // Use handleSubmitExpense for expense
+          onSubmit={handleSubmitExpense}
           onClose={() => setIsExpenseModalOpen(false)}
         />
       </Modal>
@@ -138,54 +261,10 @@ const Home: React.FC = () => {
       >
         <TransactionForm
           type="income"
-          onSubmit={handleSubmitIncome} // Use handleSubmitIncome for income
+          onSubmit={handleSubmitIncome}
           onClose={() => setIsIncomeModalOpen(false)}
         />
       </Modal>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <SummaryCard title="Total Income" amount={totalIncome} type="income" />
-        <SummaryCard title="Total Expense" amount={totalExpense} type="expense" />
-        <SummaryCard title="Balance" amount={totalIncome - totalExpense} type="balance" />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <ChartSection
-          title="Expense Distribution"
-          data={getChartData(expenses, 'Expenses by Category', [
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(54, 162, 235, 0.6)',
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(153, 102, 255, 0.6)',
-          ])}
-          options={chartOptions}
-          categories={expenses.reduce((acc: any, expense) => {
-            acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
-            return acc;
-          }, {})}
-        />
-        <ChartSection
-          title="Income Distribution"
-          data={getChartData(income, 'Income by Category', [
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(153, 102, 255, 0.6)',
-            'rgba(255, 159, 64, 0.6)',
-            'rgba(54, 162, 235, 0.6)',
-            'rgba(255, 206, 86, 0.6)',
-          ])}
-          options={{...chartOptions, plugins: {...chartOptions.plugins, title: {...chartOptions.plugins.title, text: 'Income by Category'}}}}
-          categories={income.reduce((acc: any, inc) => {
-            acc[inc.category] = (acc[inc.category] || 0) + inc.amount;
-            return acc;
-          }, {})}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <TransactionList title="Recent Expenses" transactions={expenses} type="expense" />
-        <TransactionList title="Recent Income" transactions={income} type="income" />
-      </div>
     </div>
   );
 };
