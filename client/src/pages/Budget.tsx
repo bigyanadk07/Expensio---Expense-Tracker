@@ -210,7 +210,8 @@ const Budget: React.FC = () => {
   
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+    <div className='bg-gray-50'>
+      <div className="p-6 max-w-7xl mx-auto  min-h-screen">
       {/* Header Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Budget Dashboard</h1>
@@ -417,6 +418,7 @@ const Budget: React.FC = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

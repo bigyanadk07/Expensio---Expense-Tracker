@@ -5,7 +5,9 @@ import Home from './pages/Home'
 import Income from './pages/Income'
 import Expenses from './pages/Expenses'
 import Budget from './pages/Budget'
+import Statistics from './pages/Statistics'
 import Reports from './pages/Reports'
+import Footer from './components/Footer'
 
 
 const App:React.FC = () => {
@@ -18,8 +20,10 @@ const App:React.FC = () => {
             <Route path="/expense" element={<Expenses/>}/>
             <Route path="/income" element={<Income/>}/>
             <Route path="/budget" element={<Budget/>}/>
-            <Route path="/report" element={<Reports/>}/>
+            <Route path="/statistics" element={<Statistics/>}/>
+            <Route path="/reports" element={<Reports/>}/>
         </Routes>
+        <Footer/>
       </Router>
     </div>
   )

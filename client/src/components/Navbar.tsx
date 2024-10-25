@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Wallet, PiggyBank, PieChart, BarChart3 } from 'lucide-react';
+import { Home, Wallet, PiggyBank, PieChart, BarChart3, BarChart2, Paperclip, PieChartIcon, LucidePaperclip, DollarSign } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -13,12 +13,13 @@ const Navbar: React.FC = () => {
     { path: '/', label: 'Home', icon: Home },
     { path: '/expense', label: 'Expense', icon: Wallet },
     { path: '/income', label: 'Income', icon: PiggyBank },
-    { path: '/budget', label: 'Budget', icon: PieChart },
-    { path: '/report', label: 'Reports', icon: BarChart3 },
+    { path: '/budget', label: 'Budget', icon: DollarSign },
+    { path: '/statistics', label: 'Statistics', icon: PieChartIcon },
+    { path: '/reports', label: 'Reports', icon: LucidePaperclip},
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 sm:relative sm:bottom-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-50 sm:relative sm:bottom-auto bg-gray-50">
       <div className="mx-auto max-w-screen-lg px-4 py-3">
         <nav className="bg-white rounded-2xl shadow-lg backdrop-blur-lg bg-opacity-90 px-4 py-2 border border-gray-100">
           <div className="flex items-center justify-between gap-2">

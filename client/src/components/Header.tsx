@@ -54,17 +54,17 @@ export const Header: React.FC<HeaderProps> = ({ onAddExpense, onAddIncome }) => 
   };
 
   return (
-    <div className={`
-      w-full p-4 transition-all duration-300 ease-in-out
-      ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}
+    <div className={` 
+      w-full p-4 transition-all duration-300 ease-in-out 
+      ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-50 text-gray-800'}
       ${mounted ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'}
     `}>
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto ">
+        <div className="flex items-center justify-between ">
           {/* Logo Section */}
           <div className="flex items-center space-x-2">
             <Wallet className="h-8 w-8 text-blue-500" />
-            <span className="text-xl font-bold">Finance Tracker</span>
+            <span className="text-xl font-bold">Expensio</span>
           </div>
 
           {/* Search Bar */}
@@ -72,6 +72,7 @@ export const Header: React.FC<HeaderProps> = ({ onAddExpense, onAddIncome }) => 
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
+              disabled
                 type="text"
                 placeholder="Search transactions..."
                 value={searchQuery}
@@ -121,6 +122,7 @@ export const Header: React.FC<HeaderProps> = ({ onAddExpense, onAddIncome }) => 
 
             {/* Dark Mode Toggle */}
             <button
+            disabled
               onClick={toggleDarkMode}
               className={`
                 p-2 rounded-full transition-colors
