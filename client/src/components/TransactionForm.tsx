@@ -217,7 +217,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ type, onSubmit
         Double-check your information before saving. You can edit this {type} later if needed.
       </p>
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }

@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         </p>
         <div className="flex space-x-4">
           <a
-            href="https://www.linkedin.com/in/bigyanadhikari07/" // Replace with your LinkedIn URL
+            href="https://www.linkedin.com/in/bigyanadhikari07/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-purple-500 transition-colors"
@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
             <FaLinkedin size={20} />
           </a>
           <a
-            href="https://github.com/bigyanadk07/" // Replace with your GitHub URL
+            href="https://github.com/bigyanadk07/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-purple-500 transition-colors"
@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
             <FaGithub size={20} />
           </a>
           <a
-            href="https://x.com/Bigyanadk" // Replace with your Twitter URL
+            href="https://x.com/Bigyanadk"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-purple-500 transition-colors"

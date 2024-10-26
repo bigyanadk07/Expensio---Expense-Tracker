@@ -93,7 +93,6 @@ const Budget: React.FC = () => {
     );
   }, [expenses, incomes]); // Remove budgets from dependency array
 
-  // Rest of the component remains the same...
   const handleAddBudget = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newBudget.category && newBudget.limit > 0) {
@@ -236,7 +235,7 @@ const Budget: React.FC = () => {
         </div>
       </div>
 
-      {/* Overview Cards with Enhanced Design */}
+      {/* Overview Cards  */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all hover:shadow-md">
           <div className="flex items-center justify-between mb-4">
@@ -302,7 +301,7 @@ const Budget: React.FC = () => {
           </div>
         </div>
 
-        {/* Add Budget Form with Enhanced Design */}
+        {/* Add Budget Form */}
         {showAddBudget && (
           <div className="border-b border-gray-100">
             <form onSubmit={handleAddBudget} className="p-6 bg-gray-50">
@@ -355,7 +354,7 @@ const Budget: React.FC = () => {
           </div>
         )}
 
-        {/* Budget List with Enhanced Design */}
+        {/* Budget List*/}
         <div className="divide-y divide-gray-100">
           {budgets.map((budget) => (
             <div key={budget._id || budget.category} className="p-6 hover:bg-gray-50 transition-colors">

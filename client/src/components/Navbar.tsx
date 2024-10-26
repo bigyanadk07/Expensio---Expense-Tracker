@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Wallet, PiggyBank, PieChart, BarChart3, BarChart2, Paperclip, PieChartIcon, LucidePaperclip, DollarSign } from 'lucide-react';
+import { Home, Wallet, PiggyBank, PieChartIcon, LucidePaperclip, DollarSign } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const location = useLocation();

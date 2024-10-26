@@ -1,4 +1,4 @@
-// components/TransactionList.tsx
+
 import React from 'react';
 
 interface Transaction {

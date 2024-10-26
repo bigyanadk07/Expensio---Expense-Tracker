@@ -41,7 +41,7 @@ const ExpenseCalendar: React.FC = () => {
     return { daysInMonth, startingDay };
   };
 
-  // CSV Export Function remains the same
+  // CSV Export Function
   const exportToCSV = () => {
     const headers = ['Date', 'Incoming (NPR)', 'Expenses (NPR)', 'Balance (NPR)'];
     const rows = Object.entries(dailyData).map(([date, data]) => [
@@ -152,7 +152,7 @@ const ExpenseCalendar: React.FC = () => {
     };
 
     fetchData();
-  }, [currentDate]); // Now properly depends on currentDate
+  }, [currentDate]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NP', {
@@ -176,7 +176,6 @@ const ExpenseCalendar: React.FC = () => {
     };
   };
 
-  // Rest of the component remains the same...
   const renderCalendar = () => {
     const { daysInMonth, startingDay } = getDaysInMonth(currentDate);
     const days = [];

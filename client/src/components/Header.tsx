@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Logo from "../assets/Expensio.png"
+
 import { 
   PlusCircle, 
-  Wallet, 
   PiggyBank, 
   Search, 
   Bell, 
@@ -27,7 +28,6 @@ export const Header: React.FC<HeaderProps> = ({ onAddExpense, onAddIncome }) => 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  // Handle clicks outside of dropdown and notifications
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -42,12 +42,10 @@ export const Header: React.FC<HeaderProps> = ({ onAddExpense, onAddIncome }) => 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Animation on mount
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Toggle dark mode
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle('dark');
@@ -63,8 +61,8 @@ export const Header: React.FC<HeaderProps> = ({ onAddExpense, onAddIncome }) => 
         <div className="flex items-center justify-between ">
           {/* Logo Section */}
           <div className="flex items-center space-x-2">
-            <Wallet className="h-8 w-8 text-blue-500" />
-            <span className="text-xl font-bold">Expensio</span>
+            <img src={Logo} alt="Expensio" className='w-32' />
+           
           </div>
 
           {/* Search Bar */}
