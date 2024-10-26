@@ -102,42 +102,61 @@ const ExpenseCalendar: React.FC = () => {
           fetch('http://localhost:5000/income'),
           fetch('http://localhost:5000/expense')
         ]);
-
         const incomeData = await incomeResponse.json();
         const expenseData = await expenseResponse.json();
-
         const processedData: { [key: string]: DayData } = {};
         let monthlyIncoming = 0;
         let monthlyExpenses = 0;
         let maxIncoming = 0;
         let maxExpenses = 0;
-
         // Filter data for current month
         const currentYear = currentDate.getFullYear();
         const currentMonth = currentDate.getMonth();
-
-        incomeData.forEach((income: any, index: number) => {
+        // Process income data
+        incomeData.forEach((income: any) => {
           const date = new Date(income.date);
-          // Only process data for the current month
           if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
             const dateKey = date.toISOString().split('T')[0];
-            const expenses = expenseData[index]?.amount || 0;
-            const balance = income.amount - expenses;
-
-            processedData[dateKey] = {
-              date,
-              incoming: income.amount,
-              expenses,
-              balance
-            };
-
+            
+            if (!processedData[dateKey]) {
+              processedData[dateKey] = {
+                date,
+                incoming: 0,
+                expenses: 0,
+                balance: 0
+              };
+            }
+            
+            processedData[dateKey].incoming += income.amount;
             monthlyIncoming += income.amount;
-            monthlyExpenses += expenses;
-            maxIncoming = Math.max(maxIncoming, income.amount);
-            maxExpenses = Math.max(maxExpenses, expenses);
+            maxIncoming = Math.max(maxIncoming, processedData[dateKey].incoming);
           }
         });
-
+        // Process expense data separately
+        expenseData.forEach((expense: any) => {
+          const date = new Date(expense.date);
+          if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+            const dateKey = date.toISOString().split('T')[0];
+            
+            if (!processedData[dateKey]) {
+              processedData[dateKey] = {
+                date,
+                incoming: 0,
+                expenses: 0,
+                balance: 0
+              };
+            }
+            
+            processedData[dateKey].expenses += expense.amount;
+            monthlyExpenses += expense.amount;
+            maxExpenses = Math.max(maxExpenses, processedData[dateKey].expenses);
+          }
+        });
+        // Calculate balance for each day
+        Object.keys(processedData).forEach(dateKey => {
+          processedData[dateKey].balance = 
+            processedData[dateKey].incoming - processedData[dateKey].expenses;
+        });
         setDailyData(processedData);
         setMonthData({
           totalIncoming: monthlyIncoming,
